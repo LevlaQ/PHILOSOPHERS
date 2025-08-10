@@ -6,12 +6,15 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 11:03:07 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/10 08:55:58 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/10 13:44:52 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+/*
+	TODO Tek filozof için de bir koşul, durum oluşturulmalı
+*/
 
 static int	error_main(int argc, char **argv)
 {
