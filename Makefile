@@ -1,8 +1,9 @@
 SRCS =	main.c\
 		validate_input.c\
-		validate_numbers.c\
-		calloc.c\
 		set_the_table.c\
+		philo_utils.c\
+		life_cycle.c\
+		free_funcitons.c\
 
 NAME = philosophers
 CC = gcc

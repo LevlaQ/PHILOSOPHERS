@@ -1,35 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   calloc.c                                           :+:      :+:    :+:   */
+/*   life_cycle.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/06 11:43:28 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/06 11:44:47 by gyildiz          ###   ########.fr       */
+/*   Created: 2025/08/09 16:54:28 by gyildiz           #+#    #+#             */
+/*   Updated: 2025/08/10 09:01:05 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static void	ft_bzero(void *s, size_t n)
+void	*waitress_glaring(void	*philo)
 {
-	size_t	count;
-
-	count = 0;
-	while (count < n)
-	{
-		*(((unsigned char *)(s)) + count) = 0;
-		count++;
-	}
+	(void)philo;
+	printf("Waitress is lusting after blood :D\n");
+	return (NULL);
 }
 
-void	*ft_calloc(size_t count, size_t size)
+void	*philo_life_cycle(void *philo) 
 {
-	void	*ptr;
-
-	ptr = malloc(size * count);
-	if (ptr)
-		ft_bzero(ptr, (size * count));
-	return (ptr);
+	(void)philo;
+	printf("Philo living its best life!\n");
+	return (NULL);
 }

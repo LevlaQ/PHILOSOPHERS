@@ -6,11 +6,27 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 11:03:07 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/07 18:49:39 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/10 08:55:58 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+
+static int	error_main(int argc, char **argv)
+{
+	if (!(argc >= 5 && argc <= 6))
+	{
+		printf("ERROR: Invalid argument count!\n");
+		return (0);
+	}
+	if (!(validate_variables(argv)))
+	{
+		printf("ERROR: Invalid numbers!\n");
+		return (0);
+	}
+	return (1);
+}
 
 /*
 	Bütün değişkenlerin error'dan düzgün bir şekilde geçerse masayı donatma işini
@@ -22,14 +38,14 @@
 */
 int	main(int argc, char **argv)
 {
-	t_philo	*philo;
+	t_philo_table	table;
+	t_philo			philo[MAX];
+	mtx				forks[MAX];
 	
-	if(!(error_main(argc, argv + 1)))
-		return (0);//FIXME Dönüş değeri
-	philo = ft_calloc(ft_atoi(argv[1]) + 1, sizeof(t_philo)); //MALLOC
-	//if (!philo)
-		/* Bütün malloc ile yapılan yapıyı serbest bırakacak fonksiyon, yapı tamamlanınca yazacağım*/
-	fill_structs_main(philo, argv + 1); //Program argümanını vermiyorum
+	if (!(error_main(argc, argv + 1)))
+		return (1);
+	fill_structs(philo, argv + 1, forks, &table); //Program argümanını vermiyorum
+	initiliazing_mutexes(&table, forks);
 	//test_print_philos(philo, ft_atoi(argv[1])); //TEST
 	printf("PHILO AT WORK\n");
 	return (0);
