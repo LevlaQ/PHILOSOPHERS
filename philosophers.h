@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 10:45:00 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/10 08:53:21 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/11 19:23:40 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_philo_table
 
 int		ft_atoi(const char *str);
 
-/* Kullnıcı girdi kontrol fonksiyonları */
+/* Kullanıcı girdi kontrol fonksiyonları */
 
 int		validate_variables(char **argv);
 
@@ -83,6 +83,7 @@ long long	time_difference(t_philo *philo);
 int		simulation_init(t_philo_table *table, mtx *forks, int i);
 void	*philo_life_cycle(void *arg);
 void	*waitress_glaring(void	*philo);
+int		i_think_therefore_i_am(t_philo *philo);
 
 /* Free fonksiyonları */
 
