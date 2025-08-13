@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:22:19 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/10 09:24:41 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/12 16:29:10 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static void	fill_the_struct_per_philo(t_philo *philo, char **argv, int philo_id)
 		i++;
 	}
 	philo->philo_id = philo_id; //Filonun kim olduğunu etiketi
-	printf("Philo ID: %d\n", philo->philo_id); //TEST
 }
 
 static void	reach_the_forks_per_philo(t_philo *philo, mtx *forks, t_philo_table *table)
@@ -46,15 +45,11 @@ static void	reach_the_forks_per_philo(t_philo *philo, mtx *forks, t_philo_table 
 	int	p_num;
 	
 	id = philo->philo_id;
-	printf("Philo id in forks func: %d\n", id); //TEST
 	p_num = philo->philo_num;
 	philo->meals_eaten = 0;
 	philo->chair_num = id; //Başta filo idleri ile SANDALYE NO birbirine eşit
-	printf("Philo chair num: %d\n", philo->chair_num); //TEST
 	philo->right_fork = &(forks[id - 1]);
-	printf("Right fork philo 1: %d\n", id - 1); //TEST
 	philo->left_fork = &(forks[(id % p_num)]);
-	printf("Left fork philo 1: %d\n",(id % p_num)); //TEST
 	philo->write_lock = &(table->write_lock);
 	philo->meals_eaten_lock = &(table->meals_eaten);
 	philo->last_meal_lock = &(table->last_meal);
@@ -127,10 +122,11 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 		return (finish_simulation(table, forks), 0);
 	while(i < philo_num)
 	{
+		table->philo[i].last_meal = get_time_ms(); //Thread başladığı anda start time'ı almak istiyorum
+		table->philo[i].start_time = get_time_ms();//Start time hem start time'a hem last_meal'a kaydediliyor
 		if (pthread_create(&(table->philo[i].th_id), NULL, &philo_life_cycle,\
 		 table->philo) != 0)
 			return (finish_simulation(table, forks), 0); //HACK
-		table->philo[i].last_meal = get_time_ms(); //Thread başladığı anda start time'ı almak istiyorum
 		i++;
 	}
 	i = 0;

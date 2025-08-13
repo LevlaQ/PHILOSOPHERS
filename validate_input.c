@@ -6,11 +6,15 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 11:55:56 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/08 09:50:13 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/12 13:29:07 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
+
+/* TODO Filozof sayısı 200'den fazla olmamalı, bunun kotrolünü yapan
+	fonksiyonu yaz.
+*/
 
 static int	ft_isdigit(int c)
 {
@@ -129,5 +133,7 @@ int	validate_variables(char **argv)
 			return (0);
 		i++;
 	}
+	if (ft_atoi(argv[0]) > 200) //Filo sayısı 200'den fazla olamaz
+		return (0);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 19:57:17 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/09 18:41:35 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/12 13:05:00 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,25 @@ long long	time_difference(t_philo *philo)
 		return (-1);
 	diff = now - (philo->last_meal);
 	return (diff);
+}
+
+void	take_the_next_seat(t_philo *philo)
+{
+	if (philo->chair_num != philo->philo_num)
+		philo->chair_num++; //Eğer filozof son sandalyede otran filozof değilse sandalye no'sunu bir arttır
+	else
+		philo->chair_num = 1; //Eğer son sandalyede oturuyorsa onu ilk sandalyeye taşı
+}
+
+void	print_philo_state(t_philo *philo, char *message, int p_id)
+{
+	long long	duration;
+	
+	pthread_mutex_lock(philo->write_lock); //Yazı yazmak üzere
+	duration = get_time_ms() - philo->start_time;
+	pthread_mutex_lock(philo->death_lock); //Ölüm bayrağını kontrol etmek üzere
+	if(*(philo->death_flag) == 0) //Eğer filozof ölmemişse
+		printf("%lld %d %s\n", duration, p_id, message);
+	pthread_mutex_unlock(philo->death_lock);
+	pthread_mutex_unlock(philo->write_lock);
 }

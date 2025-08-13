@@ -4,8 +4,9 @@ SRCS =	main.c\
 		philo_utils.c\
 		life_cycle.c\
 		free_funcitons.c\
+		waitress.c\
 
-NAME = philosophers
+NAME = philo
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Werror #-fsanitize=address
 OBJS = $(SRCS:.c=.o)

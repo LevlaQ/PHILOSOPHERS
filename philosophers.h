@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 10:45:00 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/11 19:23:40 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/13 19:22:25 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,29 +20,30 @@
 # include <pthread.h> //pthread functions
 # include <stdio.h> //printf()
 
-#define MAX 200
+# define MAX 200
 
 typedef pthread_mutex_t mtx;
 
 typedef struct s_philo
 {
 	int			philo_id;			//Çıktıda filozoflar birbirine karışmasın diye bir değişken
-	pthread_t	th_id;			//Oluşturduğum thread'in id'si, fonksiyon thread id'sini buraya yazacak
+	pthread_t	th_id;				//Oluşturduğum thread'in id'si, fonksiyon thread id'sini buraya yazacak
 	int			philo_num;			//Kaç tane filom var
 	int			time_die;			//En son yemek yeme başlangıcımdan bu zamana ne zaman açlıktan öleceğim
 	int			time_eat;			//Ne kadar sürede yemek yiyorum
 	int			time_sleep;			//Ne kadar sürede uyuyorum
 	int			num_eat;			//Opsiyonel, bütün filozoflar en az kaç yemek yemeli
 	int			meals_eaten;		//Ben kaç defa yemek yedim //LOCK
+	long long	start_time;			//Simülasyonun başlama zamanı
 	long long	last_meal;			//En son yemek yemeye başlamamın üzerinden geçen süre (ya da simülasyon başlama zamanı) //LOCK
 	int			chair_num;			//Şu an hangi sandalyede oturuyorum
 	int			*death_flag;		//Yaşıyorsam 0, ölüysem 1, Bütün filolar ortak yere bakacak
 	mtx			*left_fork;			//Filonun solundaki çatal
 	mtx			*right_fork;		//Filonun sağındaki çatal
-	mtx			*death_lock;
-	mtx			*write_lock;
-	mtx			*meals_eaten_lock;
-	mtx			*last_meal_lock;
+	mtx			*death_lock;		//Ölüm bayrağını koruyan lock
+	mtx			*write_lock;		//Filoların terminale yazı yazışını koruyoan lock
+	mtx			*meals_eaten_lock;	//Filoun o ana kaçar kaç yemek yediği değişkenini koruyan lock
+	mtx			*last_meal_lock;	//En son yemek yeme zamanını kotuyan lock
 }				t_philo;
 
 /*
@@ -78,12 +79,18 @@ int		initiliazing_mutexes(t_philo_table *table, mtx *forks);
 long long	get_time_ms(void);
 long long	time_difference(t_philo *philo);
 
+/* Yaşam döngüsü yardımcı fonksiyonları */
+
+void	take_the_next_seat(t_philo *philo);
+void	print_philo_state(t_philo *philo, char *message, int p_id);
+
 /* Filozof yaşan döngüsü fonksiyonları */
 
 int		simulation_init(t_philo_table *table, mtx *forks, int i);
 void	*philo_life_cycle(void *arg);
-void	*waitress_glaring(void	*philo);
-int		i_think_therefore_i_am(t_philo *philo);
+void	*waitress_glaring(void *philo);
+void	i_think_therefore_i_am(t_philo *philo);
+void	eat_sleep(t_philo *philo);
 
 /* Free fonksiyonları */
 
