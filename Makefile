@@ -7,8 +7,8 @@ SRCS =	main.c\
 		waitress.c\
 
 NAME = philo
-CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror #-fsanitize=address
+CC = cc
+CFLAGS = -g -Wall -Wextra -Werror -fsanitize=thread
 OBJS = $(SRCS:.c=.o)
 FLAGS = -lreadline
 

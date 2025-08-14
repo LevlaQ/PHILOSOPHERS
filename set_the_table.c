@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:22:19 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/12 16:29:10 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/14 14:50:50 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,15 +118,18 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 	int			philo_num;
 
 	philo_num = table->philo[0].philo_num;
-	if (pthread_create(&waitress, NULL, &waitress_glaring, table->philo) != 0) //HACK
+	if (pthread_create(&waitress, NULL, &waitress_glaring, table->philo) != 0)
 		return (finish_simulation(table, forks), 0);
 	while(i < philo_num)
 	{
+		pthread_mutex_lock(table->philo[i].last_meal_lock); //HACK
 		table->philo[i].last_meal = get_time_ms(); //Thread başladığı anda start time'ı almak istiyorum
+		pthread_mutex_unlock(table->philo[i].last_meal_lock);//HACK
 		table->philo[i].start_time = get_time_ms();//Start time hem start time'a hem last_meal'a kaydediliyor
-		if (pthread_create(&(table->philo[i].th_id), NULL, &philo_life_cycle,\
-		 table->philo) != 0)
-			return (finish_simulation(table, forks), 0); //HACK
+		//printf("Struct id: %d, philo_id: %d, chair_num: %d\n", i, table->philo[i].philo_id, table->philo[i].chair_num);
+		if (pthread_create(&(table->philo[i].th_id), NULL, &philo_life_cycle, \
+		 &(table->philo[i])) != 0)
+			return (finish_simulation(table, forks), 0);
 		i++;
 	}
 	i = 0;

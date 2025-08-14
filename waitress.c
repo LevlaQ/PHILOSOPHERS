@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 13:51:07 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/13 13:53:37 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/14 16:42:59 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	check_full(t_philo *philo, int *counter)
 	if (philo->meals_eaten >= num_e)
 	{
 		pthread_mutex_unlock(philo->meals_eaten_lock);
-		*(counter)++;
+		(*counter)++;
 	}
 	else
 		pthread_mutex_unlock(philo->meals_eaten_lock);
@@ -47,10 +47,10 @@ static int	check_philo_death(t_philo *philo)
 {
 	long long	duration;
 
-	pthread_mutex_lock(philo->last_meal_lock); //Kilitledi, okumayı yaptıktan sonra serbest bırakmalı
+	//pthread_mutex_lock(philo->last_meal_lock); //Kilitledi, okumayı yaptıktan sonra serbest bırakmalı
 	if (time_difference(philo) > philo->time_die)
 	{
-		pthread_mutex_unlock(philo->last_meal_lock); //Karşılaştırmayı yaptım, şimdi serbest bırak
+		//pthread_mutex_unlock(philo->last_meal_lock); //Karşılaştırmayı yaptım, şimdi serbest bırak
 		pthread_mutex_lock(philo->write_lock);
 		pthread_mutex_lock(philo->death_lock);
 		*(philo->death_flag) = 1;
@@ -60,7 +60,7 @@ static int	check_philo_death(t_philo *philo)
 		pthread_mutex_unlock(philo->write_lock);
 		return (1);
 	}
-	pthread_mutex_unlock(philo->last_meal_lock); //İlgili şartı sağlamıyormuş o zaman serbest bırakalım
+	//pthread_mutex_unlock(philo->last_meal_lock); //İlgili şartı sağlamıyormuş o zaman serbest bırakalım
 	return (0);
 }
 
@@ -86,7 +86,7 @@ void	*waitress_glaring(void *philo)
 	while(42)
 	{
 		usleep(250); //CPU sürekli yorulmasın diye
-		if (i = 0)
+		if (i == 0)
 			counter = 0; //Her tur için sayım yapıyor!!! (Bu turda hepsi tok mu)
 		if (check_philo_death((philos + i)))
 			break ;

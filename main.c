@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 11:03:07 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/10 13:44:52 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/14 14:03:50 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	main(int argc, char **argv)
 		return (1);
 	fill_structs(philo, argv + 1, forks, &table); //Program argümanını vermiyorum
 	initiliazing_mutexes(&table, forks);
-	//test_print_philos(philo, ft_atoi(argv[1])); //TEST
-	printf("PHILO AT WORK\n");
+	simulation_init(&table, forks, 0);
 	return (0);
 }
