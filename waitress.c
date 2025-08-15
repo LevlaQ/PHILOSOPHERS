@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/13 13:51:07 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/14 16:42:59 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 10:58:00 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static int	check_philo_death(t_philo *philo)
 		pthread_mutex_lock(philo->write_lock);
 		pthread_mutex_lock(philo->death_lock);
 		*(philo->death_flag) = 1;
-		duration = get_time_ms() - philo->start_time;
+		duration = get_time_ms() - *(philo->start_time);
 		printf("%lld %d died\n", duration, philo->philo_id);
 		pthread_mutex_unlock(philo->death_lock);
 		pthread_mutex_unlock(philo->write_lock);

@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 10:45:00 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/13 19:22:25 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 10:31:08 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ typedef struct s_philo
 	int			time_sleep;			//Ne kadar sürede uyuyorum
 	int			num_eat;			//Opsiyonel, bütün filozoflar en az kaç yemek yemeli
 	int			meals_eaten;		//Ben kaç defa yemek yedim //LOCK
-	long long	start_time;			//Simülasyonun başlama zamanı
+	long long	*start_time;			//Simülasyonun başlama zamanı
 	long long	last_meal;			//En son yemek yemeye başlamamın üzerinden geçen süre (ya da simülasyon başlama zamanı) //LOCK
 	int			chair_num;			//Şu an hangi sandalyede oturuyorum
 	int			*death_flag;		//Yaşıyorsam 0, ölüysem 1, Bütün filolar ortak yere bakacak
+	int			*wait;
+	mtx			*wait_lock;			//Bütün filolar aynı anda başlasınlar diye
 	mtx			*left_fork;			//Filonun solundaki çatal
 	mtx			*right_fork;		//Filonun sağındaki çatal
 	mtx			*death_lock;		//Ölüm bayrağını koruyan lock
@@ -52,13 +54,16 @@ typedef struct s_philo
 */
 typedef struct s_philo_table
 {
-	int		death_flag;
-	mtx		death_lock;		//Ölüm kilidi ne kadar gerekli, zaten yalnızca gözlemci okuyup yazma yapacak, başka erşien yok
-	mtx		write_lock;		//Ekrana aynı anda hepsi yazı yazmaya kalkamasın
-	mtx		meals_eaten;	//Filo kaç yemek yediğini yazarken superviser okuma yapmasın
-	mtx		last_meal;		//Son yemeğimin zamanını yazarken gözlemci yarım veriyi görüp yazı yazmasın
-	t_philo	*philo;
-}			t_philo_table;
+	int			death_flag;
+	long long	start_time;		//Artık buraya start_time ekleyeceğim
+	int			wait;			//Bütün filozoflar aynı anda başlasınlar diye
+	mtx			wait_lock;
+	mtx			death_lock;		//Ölüm kilidi ne kadar gerekli, zaten yalnızca gözlemci okuyup yazma yapacak, başka erşien yok
+	mtx			write_lock;		//Ekrana aynı anda hepsi yazı yazmaya kalkamasın
+	mtx			meals_eaten;	//Filo kaç yemek yediğini yazarken superviser okuma yapmasın
+	mtx			last_meal;		//Son yemeğimin zamanını yazarken gözlemci yarım veriyi görüp yazı yazmasın
+	t_philo		*philo;
+}				t_philo_table;
 
 /* Filozoflar utils */
 

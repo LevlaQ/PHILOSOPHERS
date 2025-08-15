@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:54:28 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/14 16:53:44 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 11:54:00 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,16 @@
 	Dilimleme sebebim uzun uyku sürelerinde bile superviser gözlem
 	yapabilsin ve 10 ms kuralına yaklaşalım
 */
-// void	activity_duration(long long ms)
-// {
-// 	long long	us;
-// 	long long	deadline;
+void	activity_duration(long long ms)
+{
+	long long	deadline;
 
-// 	us = 1000 * ms; //FIXME 1000LL yazılabilir
-// 	deadline = get_time_ms() + ms;
-// 	while (us > 0 && get_time_ms() <= deadline)
-// 	{
-// 		if (us > 50000)
-// 		{
-// 			usleep(50000); //50 ms usleep yapsın
-// 			us = (deadline - get_time_ms()) * 1000;
-// 		}
-// 		else
-// 		{
-// 			usleep(us);
-// 			us = (deadline - get_time_ms()) * 1000;
-// 		}
-// 	}
-// }
+	deadline = get_time_ms() + ms;
+	while (get_time_ms() < deadline)
+	{
+		usleep(500);
+	}
+}
 
 void	i_think_therefore_i_am(t_philo *philo)
 {
@@ -60,9 +49,9 @@ void	i_think_therefore_i_am(t_philo *philo)
 
 void	eat_sleep(t_philo *philo)
 {
-	if(philo->left_fork > philo->right_fork) //right-fork adresi daha düşük
+	if(philo->left_fork > philo->right_fork)
 	{
-		pthread_mutex_lock(philo->right_fork); //Önce çatallarını aldırıyorum
+		pthread_mutex_lock(philo->right_fork);
 		print_philo_state(philo, "has taken a fork", philo->philo_id);
 		pthread_mutex_lock(philo->left_fork);
 		print_philo_state(philo, "has taken a fork", philo->philo_id);
@@ -74,25 +63,29 @@ void	eat_sleep(t_philo *philo)
 		pthread_mutex_lock(philo->right_fork);
 		print_philo_state(philo, "has taken a fork", philo->philo_id);
 	}
-	// pthread_mutex_lock(philo->left_fork);
-	// print_philo_state(philo, "has taken a fork", philo->philo_id);
-	// pthread_mutex_lock(philo->right_fork);
-	// print_philo_state(philo, "has taken a fork", philo->philo_id);
 	pthread_mutex_lock(philo->last_meal_lock); //Son yemek yediği zaman yazacak, o yüzden lockuyorum
 	philo->last_meal = get_time_ms();
 	pthread_mutex_unlock(philo->last_meal_lock);//Son yemek zamanı yazıldı, lock'u açıyorum
 	print_philo_state(philo, "is eating", philo->philo_id); //Yemek yiyor yazısı
-	usleep(philo->time_eat * 1000);
-	//activity_duration((long long)philo->time_eat); //O kadar süre kadar bekliyor
+	activity_duration((long long)philo->time_eat); //O kadar süre kadar bekliyor
 	pthread_mutex_lock(philo->meals_eaten_lock); //meals_eaten değişkeninde artış yapılması lazım, bu yüzden kilitliyorum
 	philo->meals_eaten++;
 	pthread_mutex_unlock(philo->meals_eaten_lock); //meals_eaten değişkeni arttırıldı, bu yüzden unlock ediyorum
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
 	print_philo_state(philo, "is sleeping", philo->philo_id);
-	usleep(philo->time_sleep * 1000);
-	//activity_duration((long long)philo->time_sleep);
+	activity_duration((long long)philo->time_sleep);
 	take_the_next_seat(philo);
+}
+
+int	start_time(mtx	*lock, int *i)
+{
+	int	start;
+
+	pthread_mutex_lock(lock);
+	start = *i;
+	pthread_mutex_unlock(lock);
+	return (start);
 }
 
 /*
@@ -103,6 +96,8 @@ void	*philo_life_cycle(void *philo_arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_arg;
+	while (!(start_time(philo->wait_lock, philo->wait))) //0 iken döngüde kal, 1 olduğu an harekete geç
+		;
 	if (philo->chair_num % 2 == 0 || philo->chair_num == philo->philo_num)
 		usleep(200);
 	pthread_mutex_lock(philo->death_lock);

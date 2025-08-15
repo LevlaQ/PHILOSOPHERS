@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:22:19 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/14 14:50:50 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 11:55:21 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,13 @@ static void	reach_the_forks_per_philo(t_philo *philo, mtx *forks, t_philo_table 
 	philo->right_fork = &(forks[id - 1]);
 	philo->left_fork = &(forks[(id % p_num)]);
 	philo->write_lock = &(table->write_lock);
+	philo->wait_lock = &(table->wait_lock);
+	philo->wait = &(table->wait);
 	philo->meals_eaten_lock = &(table->meals_eaten);
 	philo->last_meal_lock = &(table->last_meal);
 	philo->death_flag = &(table->death_flag);
 	philo->death_lock = &(table->death_lock);
+	philo->start_time = &(table->start_time);
 }
 
 
@@ -74,6 +77,8 @@ void	fill_structs(t_philo *philo, char **argv, mtx *forks, t_philo_table *table)
 		i++;
 	}
 	table->philo = philo; //t_philo_table içinde bulunan philo pointerın altına filozoflarımın arrayini yerleştirmeye çalışıyorum
+	table->death_flag = 0;
+	table->wait = 0;
 }
 
 /*
@@ -97,6 +102,8 @@ int	initiliazing_mutexes(t_philo_table *table, mtx *forks)
 		return (finish_simulation(table, forks), 0);
 	if (pthread_mutex_init(&(table->last_meal), NULL) != 0)
 		return (finish_simulation(table, forks), 0);
+	if (pthread_mutex_init(&(table->wait_lock), NULL) != 0)
+		return (finish_simulation(table, forks), 0);
 	while (i < table->philo[0].philo_num)
 	{
 		if (pthread_mutex_init(forks + i, NULL) != 0)
@@ -118,20 +125,22 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 	int			philo_num;
 
 	philo_num = table->philo[0].philo_num;
-	if (pthread_create(&waitress, NULL, &waitress_glaring, table->philo) != 0)
-		return (finish_simulation(table, forks), 0);
+	table->start_time = get_time_ms(); //Table'a start time koydum
 	while(i < philo_num)
 	{
 		pthread_mutex_lock(table->philo[i].last_meal_lock); //HACK
-		table->philo[i].last_meal = get_time_ms(); //Thread başladığı anda start time'ı almak istiyorum
+		table->philo[i].last_meal = table->start_time;
 		pthread_mutex_unlock(table->philo[i].last_meal_lock);//HACK
-		table->philo[i].start_time = get_time_ms();//Start time hem start time'a hem last_meal'a kaydediliyor
-		//printf("Struct id: %d, philo_id: %d, chair_num: %d\n", i, table->philo[i].philo_id, table->philo[i].chair_num);
 		if (pthread_create(&(table->philo[i].th_id), NULL, &philo_life_cycle, \
-		 &(table->philo[i])) != 0)
-			return (finish_simulation(table, forks), 0);
+		&(table->philo[i])) != 0)
+		return (finish_simulation(table, forks), 0);
 		i++;
 	}
+	pthread_mutex_lock(&(table->wait_lock));
+	table->wait = 1;
+	pthread_mutex_unlock(&(table->wait_lock));
+	if (pthread_create(&waitress, NULL, &waitress_glaring, table->philo) != 0)
+		return (finish_simulation(table, forks), 0);
 	i = 0;
 	while(i < philo_num)
 	{

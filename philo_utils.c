@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 19:57:17 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/14 16:43:03 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 10:59:02 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	print_philo_state(t_philo *philo, char *message, int p_id)
 	long long	duration;
 	
 	pthread_mutex_lock(philo->write_lock); //Yazı yazmak üzere
-	duration = get_time_ms() - philo->start_time;
+	duration = get_time_ms() - *(philo->start_time);
 	pthread_mutex_lock(philo->death_lock); //Ölüm bayrağını kontrol etmek üzere
 	if(*(philo->death_flag) == 0) //Eğer filozof ölmemişse
 		printf("%lld %d %s\n", duration, p_id, message);
