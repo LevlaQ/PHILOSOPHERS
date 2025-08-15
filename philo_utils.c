@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 19:57:17 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/15 10:59:02 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 12:40:15 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,9 @@ long long	get_time_ms(void)
 long long	time_difference(t_philo *philo)
 {
 	long long	diff;
-	long long	now;
 
-	now =  get_time_ms();
-	if (now == -1)
-		return (-1);
 	pthread_mutex_lock(philo->last_meal_lock);
-	diff = now - (philo->last_meal);
+	diff = get_time_ms() - philo->last_meal;
 	pthread_mutex_unlock(philo->last_meal_lock);
 	return (diff);
 }

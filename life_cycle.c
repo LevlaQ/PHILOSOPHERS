@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:54:28 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/15 11:54:00 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 15:43:05 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	activity_duration(long long ms)
 	deadline = get_time_ms() + ms;
 	while (get_time_ms() < deadline)
 	{
-		usleep(500);
+		usleep(100);
 	}
 }
 
@@ -49,9 +49,9 @@ void	i_think_therefore_i_am(t_philo *philo)
 
 void	eat_sleep(t_philo *philo)
 {
-	if(philo->left_fork > philo->right_fork)
+	if(philo->left_fork > philo->right_fork) //right-fork adresi daha düşük
 	{
-		pthread_mutex_lock(philo->right_fork);
+		pthread_mutex_lock(philo->right_fork); //Önce çatallarını aldırıyorum
 		print_philo_state(philo, "has taken a fork", philo->philo_id);
 		pthread_mutex_lock(philo->left_fork);
 		print_philo_state(philo, "has taken a fork", philo->philo_id);
@@ -63,6 +63,10 @@ void	eat_sleep(t_philo *philo)
 		pthread_mutex_lock(philo->right_fork);
 		print_philo_state(philo, "has taken a fork", philo->philo_id);
 	}
+	// pthread_mutex_lock(philo->left_fork);
+	// print_philo_state(philo, "has taken a fork", philo->philo_id);
+	// pthread_mutex_lock(philo->right_fork);
+	// print_philo_state(philo, "has taken a fork", philo->philo_id);
 	pthread_mutex_lock(philo->last_meal_lock); //Son yemek yediği zaman yazacak, o yüzden lockuyorum
 	philo->last_meal = get_time_ms();
 	pthread_mutex_unlock(philo->last_meal_lock);//Son yemek zamanı yazıldı, lock'u açıyorum
@@ -77,6 +81,7 @@ void	eat_sleep(t_philo *philo)
 	activity_duration((long long)philo->time_sleep);
 	take_the_next_seat(philo);
 }
+	
 
 int	start_time(mtx	*lock, int *i)
 {
@@ -98,15 +103,18 @@ void	*philo_life_cycle(void *philo_arg)
 	philo = (t_philo *)philo_arg;
 	while (!(start_time(philo->wait_lock, philo->wait))) //0 iken döngüde kal, 1 olduğu an harekete geç
 		;
-	if (philo->chair_num % 2 == 0 || philo->chair_num == philo->philo_num)
-		usleep(200);
+	if ((philo->chair_num % 2 == 0 || philo->chair_num == philo->philo_num)
+			&& philo->philo_num != 1)
+		activity_duration(10);
 	pthread_mutex_lock(philo->death_lock);
 	while (*(philo->death_flag) != 1)
 	{
 		pthread_mutex_unlock(philo->death_lock);
-		if (((philo->chair_num % 2) == 0) || (philo->chair_num == philo->philo_num))
+		if ((((philo->chair_num % 2) == 0) || (philo->chair_num == philo->philo_num))
+				&& philo->philo_num != 1)
 			i_think_therefore_i_am(philo);
-		else if (((philo->chair_num % 2) == 1) && (philo->chair_num != philo->philo_num))
+		else if ((((philo->chair_num % 2) == 1) && (philo->chair_num != philo->philo_num))
+					|| philo->philo_num == 1)
 			eat_sleep(philo);
 		pthread_mutex_lock(philo->death_lock);
 	}

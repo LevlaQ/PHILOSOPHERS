@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:22:19 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/15 11:55:21 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 15:38:01 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 		&(table->philo[i])) != 0)
 		return (finish_simulation(table, forks), 0);
 		i++;
+		//printf("DEBUG\n");
 	}
 	pthread_mutex_lock(&(table->wait_lock));
 	table->wait = 1;
@@ -147,6 +148,7 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 		if (pthread_join(table->philo[i].th_id, NULL) != 0)
 			return (finish_simulation(table, forks), 0);
 		i++;
+		//printf("DEBUG2\n");
 	}
 	if (pthread_join(waitress, NULL) != 0)
 		return (finish_simulation(table, forks), 0);
