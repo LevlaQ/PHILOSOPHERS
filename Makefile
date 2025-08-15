@@ -8,7 +8,7 @@ SRCS =	main.c\
 
 NAME = philo
 CC = gcc
-CFLAGS = -g -Wall -Wextra -Werror -fsanitize=undefined
+CFLAGS = -g -Wall -Wextra -Werror #-fsanitize=undefined
 OBJS = $(SRCS:.c=.o)
 FLAGS = -lreadline
 

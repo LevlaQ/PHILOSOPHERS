@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 14:22:19 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/15 15:38:01 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 21:05:24 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 	int			philo_num;
 
 	philo_num = table->philo[0].philo_num;
-	table->start_time = get_time_ms(); //Table'a start time koydum
+	table->start_time = get_time_ms();
 	while(i < philo_num)
 	{
 		pthread_mutex_lock(table->philo[i].last_meal_lock); //HACK
@@ -135,7 +135,6 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 		&(table->philo[i])) != 0)
 		return (finish_simulation(table, forks), 0);
 		i++;
-		//printf("DEBUG\n");
 	}
 	pthread_mutex_lock(&(table->wait_lock));
 	table->wait = 1;
@@ -145,10 +144,14 @@ int	simulation_init(t_philo_table *table, mtx *forks, int i)
 	i = 0;
 	while(i < philo_num)
 	{
-		if (pthread_join(table->philo[i].th_id, NULL) != 0)
+		if(philo_num == 1)
+			pthread_detach(table->philo[i].th_id);
+		else
+		{
+			if (pthread_join(table->philo[i].th_id, NULL) != 0)
 			return (finish_simulation(table, forks), 0);
+		}
 		i++;
-		//printf("DEBUG2\n");
 	}
 	if (pthread_join(waitress, NULL) != 0)
 		return (finish_simulation(table, forks), 0);

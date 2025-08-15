@@ -6,7 +6,7 @@
 /*   By: gyildiz <gyildiz@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 16:54:28 by gyildiz           #+#    #+#             */
-/*   Updated: 2025/08/15 15:43:05 by gyildiz          ###   ########.fr       */
+/*   Updated: 2025/08/15 20:45:21 by gyildiz          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	*philo_life_cycle(void *philo_arg)
 
 	philo = (t_philo *)philo_arg;
 	while (!(start_time(philo->wait_lock, philo->wait))) //0 iken döngüde kal, 1 olduğu an harekete geç
-		;
+		usleep(10);
 	if ((philo->chair_num % 2 == 0 || philo->chair_num == philo->philo_num)
 			&& philo->philo_num != 1)
 		activity_duration(10);
